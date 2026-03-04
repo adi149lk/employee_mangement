@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
 
-const Login = () => {
+const Login = ({ handleLogin }) => {
   let email = useRef("");
   let password = useRef("");
   const submitHandler = (e) => {
     e.preventDefault();
-    console.log(email.current.value);
-    console.log(password.current.value);
+    // console.log(email.current.value);
+    // console.log(password.current.value);
+    handleLogin(email.current.value, password.current.value);
     email.current.value = "";
     password.current.value = "";
   };
