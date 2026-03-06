@@ -8,10 +8,12 @@ import { AuthContext } from "./context/AuthProvider";
 const App = () => {
   const [loggedInUserData, SetloggedInUserData] = useState(null);
   const [user, setuser] = useState(null);
-  const AuthData = useContext(AuthContext);
+  const { userData, dispatch } = useContext(AuthContext);
   useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (loggedInUser) {
+    const loggedInUse = localStorage.getItem("loggedInUser");
+
+    if (loggedInUse) {
+      const loggedInUser = JSON.parse(loggedInUse);
       setuser(loggedInUser.role);
       SetloggedInUserData(loggedInUser.data);
     }
@@ -19,10 +21,10 @@ const App = () => {
 
   const handleLogin = (email, password) => {
     if (
-      AuthData &&
-      AuthData.admin.find((e) => email == e.email && password == e.password)
+      userData &&
+      userData.admin.find((e) => email == e.email && password == e.password)
     ) {
-      const admin = AuthData.admin.find(
+      const admin = userData.admin.find(
         (e) => email == e.email && password == e.password,
       );
       SetloggedInUserData(admin);
@@ -31,8 +33,8 @@ const App = () => {
         "loggedInUser",
         JSON.stringify({ role: "admin", data: admin }),
       );
-    } else if (AuthData) {
-      const employee = AuthData.employees.find(
+    } else if (userData) {
+      const employee = userData.employees.find(
         (e) => email == e.email && password == e.password,
       );
       if (employee) {
@@ -53,9 +55,13 @@ const App = () => {
       {!user ? (
         <Login handleLogin={handleLogin} />
       ) : user == "admin" ? (
-        <AdminDashBoard data={loggedInUserData} />
+        <AdminDashBoard
+          data={loggedInUserData}
+          suser={setuser}
+          dispatch={dispatch}
+        />
       ) : (
-        <EmployeeDashBoard data={loggedInUserData} />
+        <EmployeeDashBoard data={loggedInUserData} suser={setuser} />
       )}
       {}
     </>
